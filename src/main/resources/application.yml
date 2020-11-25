@@ -1,0 +1,107 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # useUnicode 是否使用Unicode字符集，如果参数characterEncoding设置，本参数值必须设置为true
+    # characterEncoding 当useUnicode设置为true时，指定字符编码
+    # useSSL
+    # allowPublicKeyRetrieval
+    # serverTimezone
+    url: jdbc:mysql://localhost:3306/boot_db?useUnicode=true&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=GMT%2B8
+    username: root
+    password:
+    sql-script-encoding: utf-8
+    druid:
+      # 初始化时建立物理连接的个数
+      initial-size: 5
+      # 最大连接池数量
+      max-active: 30
+      # 最小连接池数量
+      min-idle: 5
+      # 获取连接时最大等待时间，单位毫秒
+      max-wait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      # 连接保持空闲而不被驱逐的最小时间，单位是毫秒
+      min-evictable-idle-time-millis: 300000
+      # 用来检测连接是否有效的sql，要求是一个查询语句
+      validation-query: SELECT 1 FROM TEST
+      # 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      test-while-idle: true
+      # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+      test-on-borrow: false
+      # 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+      test-on-return: false
+      # 是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+      # pool-prepared-statements: false
+      # 要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。
+      # max-pool-prepared-statement-per-connection-size: 10
+      # 配置监控统计拦截的filters，去掉后监控界面sql无法统计
+      filters: stat,wall
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+      # 合并多个DruidDataSource的监控数据
+      use-global-data-source-stat: true
+
+      # WebStatFilter配置，说明请参考Druid Wiki，配置_配置WebStatFilter
+      web-stat-filter.enabled: true
+      web-stat-filter.url-pattern: /*
+      web-stat-filter.exclusions: '*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*'
+      # StatViewServlet配置，说明请参考Druid Wiki，配置_StatViewServlet配置
+      stat-view-servlet.enabled: true
+      stat-view-servlet.url-pattern: /druid/*
+      stat-view-servlet.reset-enable: false
+      stat-view-servlet.login-username: druiduser
+      stat-view-servlet.login-password: druidpassword
+      stat-view-servlet.allow: 127.0.0.1
+  jpa:
+    hibernate:
+      # 开启该配置自动创建数据 取值范围：none/validate/update/create/create-drop
+      # create: 每次加载hibernate时都会删除上一次的生成的表，然后根据你的model类再重新来生成新表，哪怕两次没有任何改变也要这样执行，这就是导致数据库表数据丢失的一个重要原因。
+      # create-drop: 每次加载hibernate时根据model类生成表，但是sessionFactory一关闭，表就自动删除。
+      # create-update: 最常用的属性，第一次加载hibernate时根据model类会自动建立起表的结构（前提是先建立好数据库），以后加载hibernate时根据 model类自动更新表结构，即使表结构改变了但表中的行仍然存在不会删除以前的行。要注意的是当部署到服务器后，表结构是不会被马上建立起来的，是要等应用第一次运行起来后才会。
+      # validate: 每次加载hibernate时，验证创建数据库表结构，只会和数据库中的表进行比较，不会创建新表，但是会插入新值。
+      # 自动导入数据：启动时处于classpath根目录下的 import.sql文件会被执行(前提是ddl-auto属性被设置为 create 或create-drop)。
+      # 这是hibernate的特性，与Spring无关。也可以利用Spring JDBC实现数据库初始化；
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    show-sql: true
+    # 解决启动时，warn提示
+    open-in-view: false
+
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    # 连接超时时间（毫秒）
+    timeout: 5000
+    # 默认是索引为0的数据库
+    database: 0
+    #由于Spring Boot2.x 的改动，连接池相关配置需要通过spring.redis.lettuce.pool或者 spring.redis.jedis.pool 进行配置
+    lettuce:
+      pool:
+        #连接池最大连接数(使用负值表示没有限制) 默认8
+        max-active: 200
+        #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1
+        #连接池中的最小空闲连接
+        min-idle: 0
+        #连接池中的最大空闲连接
+        max-idle: 10
+
+  security:
+    user:
+      name: user
+      password: user
+
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /
+    connection-timeout: 15000
+
+# debug: true
+
+# 以下是本项目自定义配置
+app:
+  version: 0.1
